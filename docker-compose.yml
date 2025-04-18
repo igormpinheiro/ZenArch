@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  zenarch.api:
+    image: ${DOCKER_REGISTRY-}zenarch:latest
+    container_name: zen-arch-api
+    build:
+      context: .
+      dockerfile: src/Web.API/Dockerfile
+    ports:
+      - 7000:7000
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - zenarch-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Strong.ZenPass@987"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - 1433:1433
+    volumes:
+      - zenarch-sql-data:/var/opt/mssql
+    networks:
+      - zenarch-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "Strong.ZenPass@987" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  zenarch-network:
+
+volumes:
+  zenarch-sql-data:
