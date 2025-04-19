@@ -1,4 +1,6 @@
+using Persistence;
 using Serilog;
+using Web.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,15 +8,23 @@ builder.Host.UseSerilog((context, loggerConfiguration) =>
     loggerConfiguration.ReadFrom.Configuration(context.Configuration)
 );
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddApiServices()
+    .AddPersistence(builder.Configuration);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Zen Arch API"));
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "ZenArch API");
+        options.RoutePrefix = string.Empty; // Para servir a UI do Swagger na raiz
+        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+        options.DefaultModelsExpandDepth(0); // Oculta a seção de modelos por padrão
+    });
+    
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
