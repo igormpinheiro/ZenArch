@@ -1,4 +1,5 @@
 using Persistence;
+using Infrastructure;
 using Serilog;
 using Web.API.Extensions;
 
@@ -9,7 +10,8 @@ builder.Host.UseSerilog((context, loggerConfiguration) =>
 );
 
 builder.Services.AddApiServices()
-    .AddPersistence(builder.Configuration);
+    .AddPersistence(builder.Configuration)
+    .AddInfrastructure();
 
 var app = builder.Build();
 
@@ -19,12 +21,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "ZenArch API");
-        options.RoutePrefix = string.Empty; // Para servir a UI do Swagger na raiz
+        // options.RoutePrefix = string.Empty; // Para servir a UI do Swagger na raiz
         options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
         options.DefaultModelsExpandDepth(0); // Oculta a seção de modelos por padrão
     });
-    
-    app.ApplyMigrations();
+
+    // app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

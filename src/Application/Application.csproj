@@ -13,6 +13,7 @@
     <Folder Include="Features\FeatureA\Commands\" />
     <Folder Include="Features\FeatureA\EventHandlers\" />
     <Folder Include="Features\FeatureA\Queries\" />
+    <Folder Include="Features\Users\" />
     <Folder Include="Mappings\" />
   </ItemGroup>
 
