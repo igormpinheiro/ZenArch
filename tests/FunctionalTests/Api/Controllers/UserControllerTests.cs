@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 using Web.API.Models;

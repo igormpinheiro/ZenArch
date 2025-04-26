@@ -4,12 +4,27 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
 
-internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
+internal sealed class UserConfiguration : BaseEntityConfiguration<User, Guid>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.HasKey(u => u.Id);
-        builder.Property(e => e.Name).HasColumnName("Name").HasMaxLength(100);
-        builder.Property(e => e.Email).HasColumnName("Email").HasMaxLength(100);
+        base.Configure(builder);
+        
+        // Configuração da tabela
+        builder.ToTable("Users");
+
+        
+        // Propriedades específicas de User
+        builder.Property(u => u.Name)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(u => u.Email)
+            .HasMaxLength(150)
+            .IsRequired();
+
+        // Índices
+        builder.HasIndex(u => u.Email)
+            .IsUnique();
     }
 }

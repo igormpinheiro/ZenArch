@@ -1,17 +1,16 @@
 using Application.Abstractions.Messaging;
+using Domain.Interfaces.Repositories;
 using ErrorOr;
-using Microsoft.EntityFrameworkCore;
-using Persistence.Context;
 
 namespace Application.Features.Users.Queries;
 
 public sealed record GetAllUsersQuery : IQuery<IEnumerable<UserResponse>>;
 
-internal sealed class GetAllUsersHandler(ApplicationDbContext _context) : IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>>
+internal sealed class GetAllUsersHandler(IUserRepository _userRepository) : IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>>
 {
     public async Task<ErrorOr<IEnumerable<UserResponse>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
-        var users = await _context.Users.ToListAsync(cancellationToken);
+        var users = await _userRepository.GetAllAsync(cancellationToken);
         
         var response = new List<UserResponse>();
         

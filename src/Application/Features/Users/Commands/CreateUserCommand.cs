@@ -3,4 +3,4 @@ using Domain.Entities;
 
 namespace Application.Features.Users.Commands;
 
-public sealed record CreateUserCommand(string Email, string Name): ICommand<User>;
+public sealed record CreateUserCommand(string Email, string Name): ICommand<User>, ITransactionalCommand;
