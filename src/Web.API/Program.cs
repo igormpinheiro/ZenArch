@@ -1,3 +1,4 @@
+using Application;
 using Persistence;
 using Infrastructure;
 using Serilog;
@@ -11,7 +12,8 @@ builder.Host.UseSerilog((context, loggerConfiguration) =>
 
 builder.Services.AddApiServices()
     .AddPersistence(builder.Configuration)
-    .AddInfrastructure();
+    .AddInfrastructure()
+    .AddApplication();
 
 var app = builder.Build();
 

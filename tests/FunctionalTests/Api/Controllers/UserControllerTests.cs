@@ -1,7 +1,10 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Shouldly;
+using Web.API.Models;
 
 namespace FunctionalTests.Api.Controllers;
 
@@ -16,30 +19,37 @@ public class UserControllerTests
         _factory = new WebApplicationFactory<Program>();
         _client = _factory.CreateClient();
     }
-    
+
     [Fact]
-    public async Task CriarProduto_ComDadosValidos_DeveRetornarCreated()
+    public async Task CriarUsuario_ComDadosValidos_DeveRetornarCreated()
     {
         // Arrange
-        var newUser = new User(Guid.NewGuid(), "test@test.com", "test");
-        
+        var request = new UserInputModel("test@test.com", "test");
+
         // Act
-        var response = await _client.PostAsJsonAsync("/user", newUser);
-            
+        var response = await _client.PostAsJsonAsync("/user", request);
+
         // Assert
-        Assert.Equal( HttpStatusCode.Created, response.StatusCode);
-        
-        var userCreated = await response.Content.ReadFromJsonAsync<User>();
-        Assert.NotNull(userCreated);
-        Assert.Equal(newUser.Id, userCreated.Id);
-        Assert.Equal(newUser.Email, userCreated.Email);
-            
-        // Verifica se o produto foi realmente salvo no banco
-        var getResponse = await _client.GetAsync($"/user/{userCreated.Id}");
-        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
-            
-        var userReturned = await getResponse.Content.ReadFromJsonAsync<User>();
-        Assert.NotNull(userReturned);
-        Assert.Equal(newUser.Id, userReturned.Id);
+        response.StatusCode.ShouldBe(HttpStatusCode.Created);
+
+        await using var responseBody = await response.Content.ReadAsStreamAsync();
+        var responseData = await JsonDocument.ParseAsync(responseBody);
+        responseData.RootElement.GetProperty("name").GetString().ShouldSatisfyAllConditions(
+            name => name.ShouldNotBeNullOrWhiteSpace(),
+            name => name.ShouldBe(request.Name));
+        responseData.RootElement.GetProperty("email").GetString().ShouldSatisfyAllConditions(
+            email => email.ShouldNotBeNullOrWhiteSpace(),
+            email => email.ShouldBe(request.Email));
+
+        // Verifica se o usuario foi realmente salvo no banco
+        var userId = responseData.RootElement.GetProperty("id").GetString();
+        var getResponse = await _client.GetAsync($"/user/{userId}");
+        getResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        await using var getResponseBody = await getResponse.Content.ReadAsStreamAsync();
+        var getResponseData = await JsonDocument.ParseAsync(getResponseBody);
+        getResponseData.RootElement.GetProperty("id").GetString().ShouldSatisfyAllConditions(
+            id => id.ShouldNotBeNullOrWhiteSpace(),
+            id => id.ShouldBe(userId));
     }
 }

@@ -16,4 +16,10 @@ public class User : BaseEntity
         Email = email;
         Name = name;
     }
+    
+    public User(string email, string name)
+    {
+        Email = email;
+        Name = name;
+    }
 }

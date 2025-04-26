@@ -5,7 +5,7 @@ namespace Web.API.Extensions;
 /// <summary>
 /// Extension methods for service collection
 /// </summary>
-public static class DependencyInjection
+public static class ApplicationServicesExtensions
 {
     /// <summary>
     /// Adds all API services

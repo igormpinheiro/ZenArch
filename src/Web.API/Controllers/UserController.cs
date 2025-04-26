@@ -1,7 +1,8 @@
-using Domain.Entities;
+using Application.Features.Users.Commands;
+using Application.Features.Users.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence.Context;
+using Web.API.Models;
 
 namespace Web.API.Controllers;
 
@@ -10,40 +11,58 @@ namespace Web.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
-    private readonly ApplicationDbContext _context;
+    private readonly ISender _sender;
 
-    public UserController(ILogger<UserController> logger, ApplicationDbContext context)
+
+    public UserController(ILogger<UserController> logger, ISender sender)
     {
         _logger = logger;
-        _context = context;
+        _sender = sender;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> Get()
+    public async Task<ActionResult<IEnumerable<UserViewModel>>> Get()
     {
-        var users = await _context.Users.ToListAsync();
-        return Ok(users);
+        var result = await _sender.Send(new GetAllUsersQuery());
+
+        if (result.IsError)
+        {
+            return BadRequest();
+        }
+            
+        return Ok(result.Value.Select(user => new UserViewModel(user.Id.ToString("D"), user.Email, user.Name)).ToList());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> Get(Guid id)
+    public async Task<ActionResult<UserViewModel>> Get(Guid id)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
+        var result = await _sender.Send(new GetUserByIdQuery(id));
+        
+        if (result.IsError)
         {
-            return NotFound();
+            return BadRequest(result.Errors);
         }
+        
+        var response = new UserViewModel(result.Value.Id.ToString("D"), result.Value.Name, result.Value.Email);
 
-        return Ok(user);
+        return Ok(response);
     }
 
     [HttpPost]
-    public ActionResult<User> Post([FromBody] User user)
+    public async Task<ActionResult<UserViewModel>> Post([FromBody] UserInputModel request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("user post");
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        var command = new CreateUserCommand(request.Email, request.Name);
+        
+        var result = await _sender.Send(command, cancellationToken);
 
-        return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+        if (result.IsError)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        var response = new UserViewModel(result.Value.Id.ToString("D"), result.Value.Email, result.Value.Name);
+
+        return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
     }
 }
