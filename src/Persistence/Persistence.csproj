@@ -9,7 +9,6 @@
     <Folder Include="Extensions\" />
     <Folder Include="Interceptors\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
   <ItemGroup>

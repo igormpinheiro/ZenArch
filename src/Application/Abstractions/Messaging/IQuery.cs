@@ -1,5 +1,5 @@
-using MediatR;
 using ErrorOr;
+using MediatR;
 
 
 namespace Application.Abstractions.Messaging;

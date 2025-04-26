@@ -4,17 +4,24 @@ using MediatR;
 namespace Application.Abstractions.Messaging;
 
 /// <summary>
+/// Interface base para todos os commands.
+/// </summary>
+public interface IBaseCommand
+{
+}
+
+/// <summary>
 /// Interface para commands que não retornam dados específicos.
 /// Utiliza ErrorOr{Success} para indicar sucesso ou falha da operação.
 /// </summary>
-public interface ICommand : IRequest<ErrorOr<Success>>
+public interface ICommand : IBaseCommand, IRequest<ErrorOr<Success>>
 { }
 
 /// <summary>
 /// Interface para commands que retornam dados tipados.
 /// </summary>
 /// <typeparam name="TResponse">Tipo do dado retornado em caso de sucesso.</typeparam>
-public interface ICommand<TResponse> : IRequest<ErrorOr<TResponse>>
+public interface ICommand<TResponse> : IBaseCommand, IRequest<ErrorOr<TResponse>>
     where TResponse : notnull
 { }
 
@@ -35,4 +42,10 @@ public interface ICommandHandler<TCommand, TResponse> :
     IRequestHandler<TCommand, ErrorOr<TResponse>>
     where TCommand : ICommand<TResponse>
     where TResponse : notnull
+{ }
+
+/// <summary>
+/// Interface de marcação para commands que necessitam de transação.
+/// </summary>
+public interface ITransactionalCommand : IBaseCommand
 { }

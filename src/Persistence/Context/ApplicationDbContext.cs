@@ -5,6 +5,9 @@ using SharedKernel.Abstractions;
 
 namespace Persistence.Context;
 
+/// <summary>
+/// DbContext da aplicação
+/// </summary>
 public class ApplicationDbContext : DbContext
 {
     private readonly ICurrentUserService _currentUserService;
@@ -26,18 +29,18 @@ public class ApplicationDbContext : DbContext
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
-        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        foreach (var entry in ChangeTracker.Entries<IEntity>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
                     entry.Entity.CreatedAt = DateTime.Now;
-                    entry.Entity.CreatedBy = _currentUserService.UserId;
+                    entry.Entity.CreatedBy = _currentUserService.UserName;
                     break;
 
                 case EntityState.Modified:
                     entry.Entity.UpdatedAt = DateTime.Now;
-                    entry.Entity.UpdatedBy = _currentUserService.UserId;
+                    entry.Entity.UpdatedBy = _currentUserService.UserName;
                     break;
             }
         }
