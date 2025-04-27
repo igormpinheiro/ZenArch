@@ -28,25 +28,17 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        // Verificar se o request é um comando transacional
         if (request is not ITransactionalCommand)
         {
-            // Se não for um comando transacional, apenas passa adiante
-            return await next();
+            return await next(cancellationToken);
         }
 
         var requestType = request.GetType().Name;
         _logger.LogInformation("[Transaction] Iniciando transação para {RequestType}", requestType);
 
         try
-        {
-            // Executar o próximo handler dentro de uma transação
-            var response = await _unitOfWork.ExecuteTransactionAsync(async () =>
-                // Chamar o próximo handler na pipeline
-                await next(), cancellationToken);
-
+        {   var response = await _unitOfWork.ExecuteTransactionAsync(async () => await next(), cancellationToken);
             _logger.LogInformation("[Transaction] Transação concluída com sucesso para {RequestType}", requestType);
-
             return response;
         }
         catch (Exception ex)
