@@ -6,7 +6,7 @@ namespace Application.Features.Users.Queries;
 
 public sealed record GetAllUsersQuery : IQuery<IEnumerable<UserResponse>>;
 
-internal sealed class GetAllUsersHandler(IUserRepository _userRepository) : IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>>
+internal sealed class GetAllUsersQueryHandler(IUserRepository _userRepository) : IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>>
 {
     public async Task<ErrorOr<IEnumerable<UserResponse>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {

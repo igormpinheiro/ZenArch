@@ -51,4 +51,22 @@ public class UserControllerTests
             id => id.ShouldNotBeNullOrWhiteSpace(),
             id => id.ShouldBe(userId));
     }
+    
+    [Fact]
+    public async Task CriarUsuario_ComDadosInvalidos_DeveRetornarBadRequest()
+    {
+        // Arrange
+        var request = new UserInputModel("test", "");
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/user", request);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
+        await using var responseBody = await response.Content.ReadAsStreamAsync();
+        var responseData = await JsonDocument.ParseAsync(responseBody);
+        
+        responseData.RootElement.GetArrayLength().ShouldBe(2);
+    }
 }
