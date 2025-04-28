@@ -1,14 +1,16 @@
 using Application.Abstractions.Messaging;
+using Application.Mappings;
+using Application.Models;
 using Domain.Interfaces.Repositories;
 using ErrorOr;
 
 namespace Application.Features.Users.Queries;
 
-public sealed record GetUserByIdQuery(Guid UserId) : IQuery<UserResponse>;
+public sealed record GetUserByIdQuery(Guid UserId) : IQuery<UserViewModel>;
 
-internal sealed class GetUserByIdQueryHandler(IUserRepository _userRepository) : IQueryHandler<GetUserByIdQuery, UserResponse>
+internal sealed class GetUserByIdQueryHandler(IUserRepository _userRepository) : IQueryHandler<GetUserByIdQuery, UserViewModel>
 {
-    public async Task<ErrorOr<UserResponse>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<UserViewModel>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
@@ -16,7 +18,7 @@ internal sealed class GetUserByIdQueryHandler(IUserRepository _userRepository) :
         {
             return Error.NotFound();
         }
-        
-        return new UserResponse(user.Id, user.Name, user.Email);
+
+        return user.ToViewModel();
     }
-} 
+}

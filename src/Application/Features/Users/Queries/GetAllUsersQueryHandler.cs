@@ -1,24 +1,20 @@
 using Application.Abstractions.Messaging;
+using Application.Mappings;
+using Application.Models;
 using Domain.Interfaces.Repositories;
 using ErrorOr;
 
 namespace Application.Features.Users.Queries;
 
-public sealed record GetAllUsersQuery : IQuery<IEnumerable<UserResponse>>;
+public sealed record GetAllUsersQuery : IQuery<IEnumerable<UserViewModel>>;
 
-internal sealed class GetAllUsersQueryHandler(IUserRepository _userRepository) : IQueryHandler<GetAllUsersQuery, IEnumerable<UserResponse>>
+internal sealed class GetAllUsersQueryHandler(IUserRepository _userRepository)
+    : IQueryHandler<GetAllUsersQuery, IEnumerable<UserViewModel>>
 {
-    public async Task<ErrorOr<IEnumerable<UserResponse>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<UserViewModel>>> Handle(GetAllUsersQuery request,
+        CancellationToken cancellationToken)
     {
         var users = await _userRepository.GetAllAsync(cancellationToken);
-        
-        var response = new List<UserResponse>();
-        
-        if (users is null || users.Count == 0)
-        {
-            return response;
-        }
-        
-        return users.Select(user => new UserResponse(user.Id, user.Name, user.Email)).ToList();
+        return users.ToViewModel().ToList();
     }
 }

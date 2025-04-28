@@ -23,4 +23,14 @@ public class User : BaseEntity<Guid>
         Email = email;
         Name = name;
     }
+
+    public void UpdateName(string name)
+    {
+        Name = name;
+    }
+
+    public void UpdateEmail(string email)
+    {
+        Email = email;
+    }
 }

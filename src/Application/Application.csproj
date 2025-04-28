@@ -9,11 +9,9 @@
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Interfaces\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Features\FeatureA\Commands\" />
     <Folder Include="Features\FeatureA\EventHandlers\" />
     <Folder Include="Features\FeatureA\Queries\" />
-    <Folder Include="Mappings\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,14 +6,13 @@ namespace Persistence.EntityConfigurations;
 
 internal sealed class UserConfiguration : BaseEntityConfiguration<User, Guid>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public override void Configure(EntityTypeBuilder<User> builder)
     {
         base.Configure(builder);
-        
+
         // Configuração da tabela
         builder.ToTable("Users");
 
-        
         // Propriedades específicas de User
         builder.Property(u => u.Name)
             .HasMaxLength(100)

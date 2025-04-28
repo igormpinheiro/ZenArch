@@ -1,6 +1,6 @@
 using Application.Abstractions.Messaging;
-using Domain.Entities;
+using Application.Models;
 
 namespace Application.Features.Users.Commands;
 
-public sealed record CreateUserCommand(string Email, string Name): ICommand<User>, ITransactionalCommand;
+public sealed record CreateUserCommand(string Email, string Name): ICommand<UserViewModel>, ITransactionalCommand;
