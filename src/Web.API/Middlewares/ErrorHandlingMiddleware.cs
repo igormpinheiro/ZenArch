@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using Web.API.Models.Responses;
 
 namespace Web.API.Middlewares;
 
-internal sealed class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger)
+public sealed class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger)
     : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
@@ -12,17 +12,26 @@ internal sealed class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> l
         CancellationToken cancellationToken)
     {
         logger.LogError(exception, "Unhandled exception occurred");
+        httpContext.Response.ContentType = "application/json";
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-        var problemDetails = new ProblemDetails
+        var errorCode = "Internal.ServerError";
+        var errorMessage = "Ocorreu um erro interno no servidor.";
+
+        if (httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
         {
-            Status = StatusCodes.Status500InternalServerError,
-            Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-            Title = "Server failure"
-        };
+            errorMessage = exception.Message;
+            errorCode = exception.GetType().Name;
+        }
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
+        var errorDetails = ErrorDetails.Create(
+            errorCode,
+            errorMessage,
+            StatusCodes.Status500InternalServerError);
 
-        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+        var response = ApiResponse<object>.Failure(errorDetails);
+
+        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
 
         return true;
     }

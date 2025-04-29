@@ -6,31 +6,29 @@ using Web.API.Models;
 
 namespace Web.API.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class UserController(ISender mediator) : ApiController(mediator)
+public class UsersController(ISender mediator) : BaseApiController(mediator)
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        return await Send(new GetAllUsersQuery(), cancellationToken);
+        return await SendQuery(new GetAllUsersQuery(), cancellationToken);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
+    [HttpGet("{id}", Name = "GetById")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return await Send(new GetUserByIdQuery(id), cancellationToken);
+        return await SendQuery(new GetUserByIdQuery(id), cancellationToken);
     }
 
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] UserInputModel request, CancellationToken cancellationToken)
     {
-       
         var command = new CreateUserCommand(request.Email, request.Name);
 
-        return await Send(command, cancellationToken);
+        return await SendCreateCommand(command, nameof(GetById), model => new { id = model.Id.ToString("D") },
+            cancellationToken);
     }
 
     [HttpPut("{id}")]
@@ -38,6 +36,6 @@ public class UserController(ISender mediator) : ApiController(mediator)
         CancellationToken cancellationToken)
     {
         var command = new UpdateUserCommand(id, request.Email, request.Name);
-        return await Send(command, cancellationToken);
+        return await SendCommand(command, cancellationToken);
     }
 }
