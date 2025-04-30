@@ -1,6 +1,8 @@
 using Application;
+using HealthChecks.UI.Client;
 using Persistence;
 using Infrastructure;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using Web.API.Extensions;
 
@@ -12,7 +14,7 @@ builder.Host.UseSerilog((context, loggerConfiguration) =>
 
 builder.Services.AddApiServices()
     .AddPersistence(builder.Configuration)
-    .AddInfrastructure()
+    .AddInfrastructure(builder.Configuration)
     .AddApplication();
 
 var app = builder.Build();
@@ -33,6 +35,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler(options => { });
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 app.UseAuthorization();
 app.MapControllers();
 
