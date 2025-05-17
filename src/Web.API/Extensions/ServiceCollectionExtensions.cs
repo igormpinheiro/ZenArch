@@ -25,9 +25,9 @@ internal static class ServiceCollectionExtensions
             options.JsonSerializerOptions.WriteIndented = false;
         });
         services.AddOpenApi();
-        
+
         services.AddRouting(options => options.LowercaseUrls = true);
-        
+
         return services;
     }
 }
