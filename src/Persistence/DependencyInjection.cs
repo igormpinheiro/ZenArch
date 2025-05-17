@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Context;
+using Persistence.Interceptors;
 using Persistence.Repositories;
 using SharedKernel.Abstractions;
 
@@ -18,9 +19,14 @@ public static class DependencyInjection
     /// <returns>he service collection</returns>
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<AuditableEntityInterceptor>();
+        
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>((provider, options) =>
+        {
+            var interceptor = provider.GetRequiredService<AuditableEntityInterceptor>();
+            
             options.UseSqlServer(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
@@ -28,7 +34,8 @@ public static class DependencyInjection
                     maxRetryDelay: TimeSpan.FromSeconds(30),
                     errorNumbersToAdd: null);
                 sqlOptions.MigrationsAssembly(AssemblyReference.Assembly.FullName);
-            }));
+            }).AddInterceptors(interceptor);
+        });
         
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
