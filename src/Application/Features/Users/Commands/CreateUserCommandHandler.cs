@@ -12,7 +12,7 @@ internal sealed class CreateUserCommandHandler(IUserRepository _userRepository)
 {
     public async Task<ErrorOr<UserViewModel>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = new User(request.Email, request.Name);
+        var user = User.Factory.Create(request.Email, request.Name);
 
         await _userRepository.AddAsync(user, cancellationToken);
 

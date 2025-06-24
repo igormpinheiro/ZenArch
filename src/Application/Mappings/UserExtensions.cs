@@ -10,7 +10,6 @@ public static class UserExtensions
     public static UserViewModel ToViewModel(this User user)
     {
         ArgumentNullException.ThrowIfNull(user);
-
         return new UserViewModel
         {
             Id = user.Id,
@@ -26,20 +25,18 @@ public static class UserExtensions
     public static IEnumerable<UserViewModel> ToViewModel(this IEnumerable<User> users)
     {
         ArgumentNullException.ThrowIfNull(users);
-
         return users.Select(ToViewModel).ToList();
     }
 
     public static User ToEntity(this UserViewModel viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
-        return new User(id: viewModel.Id, email: viewModel.Email, name: viewModel.Name);
+        return User.Factory.Create(id: viewModel.Id, email: viewModel.Email, name: viewModel.Name);
     }
 
     public static CreateUserCommand ToCreateCommand(this UserViewModel viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
-        
         return new CreateUserCommand(Email: viewModel.Email, Name: viewModel.Name);
     }
 }
