@@ -1,4 +1,5 @@
 using MediatR;
+using SharedKernel.Abstractions;
 
 namespace Application.Abstractions.Messaging;
 
@@ -14,4 +15,8 @@ public interface IEvent : INotification
 /// <typeparam name="TEvent">Tipo do evento a ser manipulado.</typeparam>
 public interface IEventHandler<in TEvent> : INotificationHandler<TEvent>
     where TEvent : IEvent
+{ }
+
+public interface IDomainEventHandler<in TEvent> : INotificationHandler<TEvent>
+    where TEvent : IDomainEvent
 { }

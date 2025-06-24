@@ -20,13 +20,15 @@ public static class DependencyInjection
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<AuditableEntityInterceptor>();
+        services.AddScoped<DomainEventInterceptor>();
         
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         
         services.AddDbContext<ApplicationDbContext>((provider, options) =>
         {
-            var interceptor = provider.GetRequiredService<AuditableEntityInterceptor>();
-            
+            var auditInterceptor = provider.GetRequiredService<AuditableEntityInterceptor>();
+            var eventInterceptor = provider.GetRequiredService<DomainEventInterceptor>();
+
             options.UseSqlServer(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
@@ -34,7 +36,7 @@ public static class DependencyInjection
                     maxRetryDelay: TimeSpan.FromSeconds(30),
                     errorNumbersToAdd: null);
                 sqlOptions.MigrationsAssembly(AssemblyReference.Assembly.FullName);
-            }).AddInterceptors(interceptor);
+            }).AddInterceptors(auditInterceptor, eventInterceptor);
         });
         
         services.AddScoped<IUnitOfWork, UnitOfWork>();
