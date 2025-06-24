@@ -21,20 +21,23 @@ public class IntegrationTestAppFactory : WebApplicationFactory<Program>
                 {
                     services.Remove(descriptor);
                 }
-                
+
                 services.AddScoped<AuditableEntityInterceptor>();
+                services.AddScoped<DomainEventInterceptor>();
 
                 var provider = services.AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
 
                 services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
                 {
-                    var interceptor = serviceProvider.GetRequiredService<AuditableEntityInterceptor>();
+                    var auditInterceptor = provider.GetRequiredService<AuditableEntityInterceptor>();
+                    var eventInterceptor = provider.GetRequiredService<DomainEventInterceptor>();
 
-                    options.UseInMemoryDatabase("InMemoryDbForTesting").AddInterceptors(interceptor);
-                    options.UseInternalServiceProvider(provider);
-                    options.ConfigureWarnings(warnings =>
-                        warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.InMemoryEventId
-                            .TransactionIgnoredWarning));
+                    options.UseInMemoryDatabase("InMemoryDbForTesting")
+                        .AddInterceptors(auditInterceptor, eventInterceptor)
+                        .UseInternalServiceProvider(provider)
+                        .ConfigureWarnings(warnings =>
+                            warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.InMemoryEventId
+                                .TransactionIgnoredWarning));
                 });
 
                 using var scope = services.BuildServiceProvider().CreateScope();
