@@ -2,18 +2,17 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Application.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 
 namespace FunctionalTests.Api.Controllers;
 
-public class UsersControllerTests
+public class UsersControllerTests: IClassFixture<WebApplicationFactoryFixture>
 {
     private readonly HttpClient _client;
-    public UsersControllerTests()
+
+    public UsersControllerTests(WebApplicationFactoryFixture fixture)
     {
-        var factory = new WebApplicationFactory<Program>();
-        _client = factory.CreateClient();
+        _client = fixture.Client;
     }
 
     [Fact]
