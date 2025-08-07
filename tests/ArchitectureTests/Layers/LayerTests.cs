@@ -10,7 +10,7 @@ public class LayerTests : BaseTest
         // Arrange & Act
         TestResult result = Types.InAssembly(DomainAssembly)
             .Should()
-            .NotHaveDependencyOn("Application")
+            .NotHaveDependencyOn(ApplicationAssembly.GetName().Name)
             .GetResult();
 
         // Assert
@@ -55,56 +55,23 @@ public class LayerTests : BaseTest
         // Assert
         Assert.True(result.IsSuccessful);
     }
-
+    
     [Fact]
-    public void ApplicationLayer_ShouldNotHaveDependencyOn_PersistenceLayer()
+    public void AllLayers_ShouldNotHaveDependencyOn_PresentationLayer()
     {
-        // Arrange & Act
-        TestResult result = Types.InAssembly(ApplicationAssembly)
-            .Should()
-            .NotHaveDependencyOn(PersistenceAssembly.GetName().Name)
-            .GetResult();
+        // Arrange
+        var assemblies = new[] { DomainAssembly, ApplicationAssembly, InfrastructureAssembly, PersistenceAssembly };
+    
+        foreach (var assembly in assemblies)
+        {
+            // Act
+            TestResult result = Types.InAssembly(assembly)
+                .Should()
+                .NotHaveDependencyOn(PresentationAssembly.GetName().Name)
+                .GetResult();
 
-        // Assert
-        Assert.True(result.IsSuccessful);
-    }
-
-    [Fact]
-    public void ApplicationLayer_ShouldNotHaveDependencyOn_PresentationLayer()
-    {
-        // Arrange & Act
-        TestResult result = Types.InAssembly(ApplicationAssembly)
-            .Should()
-            .NotHaveDependencyOn(PresentationAssembly.GetName().Name)
-            .GetResult();
-
-        // Assert
-        Assert.True(result.IsSuccessful);
-    }
-
-    [Fact]
-    public void InfrastructureLayer_ShouldNotHaveDependencyOn_PresentationLayer()
-    {
-        // Arrange & Act
-        TestResult result = Types.InAssembly(InfrastructureAssembly)
-            .Should()
-            .NotHaveDependencyOn(PresentationAssembly.GetName().Name)
-            .GetResult();
-
-        // Assert
-        Assert.True(result.IsSuccessful);
-    }
-
-    [Fact]
-    public void PersistenceLayer_ShouldNotHaveDependencyOn_PresentationLayer()
-    {
-        // Arrange & Act
-        TestResult result = Types.InAssembly(PersistenceAssembly)
-            .Should()
-            .NotHaveDependencyOn(PresentationAssembly.GetName().Name)
-            .GetResult();
-
-        // Assert
-        Assert.True(result.IsSuccessful);
+            // Assert
+            Assert.True(result.IsSuccessful, $"Assembly {assembly.GetName().Name} should not depend on Presentation layer");
+        }
     }
 }
