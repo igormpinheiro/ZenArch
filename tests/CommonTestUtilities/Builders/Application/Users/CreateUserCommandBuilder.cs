@@ -25,7 +25,7 @@ public class CreateUserCommandBuilder
         return new Faker<CreateUserCommand>()
             .CustomInstantiator(f => new CreateUserCommand(
                 Email: _email ?? f.Internet.Email(),
-                Name: _name != null ? _name[..Math.Min(_name.Length, 100)] : f.Person.FullName[..Math.Min(f.Person.FullName.Length, 100)]))
+                Name: _name ?? f.Person.FullName[..Math.Min(f.Person.FullName.Length, 100)]))
             .Generate();
     }
 }
