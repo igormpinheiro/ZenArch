@@ -9,7 +9,7 @@ internal sealed class CreateUserCommandValidator : AbstractValidator<CreateUserC
     public CreateUserCommandValidator()
     {
         RuleFor(user => user.Name)
-            .NotEmpty().WithMessage(ResourceMessages.EMAIL_EMPTY)
+            .NotEmpty().WithMessage(ResourceMessages.NAME_EMPTY)
             .MaximumLength(100).WithMessage(ResourceMessages.FIELD_TOO_LONG);
         RuleFor(user => user.Email).NotEmpty().WithMessage(ResourceMessages.EMAIL_EMPTY);
         When(user => user.Email.NotEmpty(),
