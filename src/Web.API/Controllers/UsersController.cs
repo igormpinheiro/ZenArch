@@ -39,4 +39,11 @@ public class UsersController(ISender mediator) : BaseApiController(mediator)
         var command = request.ToUpdateCommand(id);
         return await SendCommand(command, cancellationToken);
     }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new DeleteUserCommand(id);
+        return await SendCommand(command, cancellationToken);
+    }
 }
