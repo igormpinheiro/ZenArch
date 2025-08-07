@@ -11,3 +11,9 @@ public sealed record UserViewModel
     public string? UpdatedAt { get; init; }
 }
 
+public sealed record UserInputModel
+{
+    public string Name { get; init; }
+    public string Email { get; init; }
+}
+

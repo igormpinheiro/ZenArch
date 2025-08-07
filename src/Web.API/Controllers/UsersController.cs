@@ -1,8 +1,9 @@
 using Application.Features.Users.Commands;
 using Application.Features.Users.Queries;
+using Application.Mappings;
+using Application.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Web.API.Models;
 
 namespace Web.API.Controllers;
 
@@ -25,7 +26,7 @@ public class UsersController(ISender mediator) : BaseApiController(mediator)
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] UserInputModel request, CancellationToken cancellationToken)
     {
-        var command = new CreateUserCommand(request.Email, request.Name);
+        var command = request.ToCreateCommand();
 
         return await SendCreateCommand(command, nameof(GetById), model => new { id = model.Id.ToString("D") },
             cancellationToken);
@@ -35,7 +36,7 @@ public class UsersController(ISender mediator) : BaseApiController(mediator)
     public async Task<IActionResult> Put(Guid id, [FromBody] UserInputModel request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateUserCommand(id, request.Email, request.Name);
+        var command = request.ToUpdateCommand(id);
         return await SendCommand(command, cancellationToken);
     }
 }

@@ -34,9 +34,15 @@ public static class UserExtensions
         return User.Factory.Create(id: viewModel.Id, email: viewModel.Email, name: viewModel.Name);
     }
 
-    public static CreateUserCommand ToCreateCommand(this UserViewModel viewModel)
+    public static CreateUserCommand ToCreateCommand(this UserInputModel inputModel)
     {
-        ArgumentNullException.ThrowIfNull(viewModel);
-        return new CreateUserCommand(Email: viewModel.Email, Name: viewModel.Name);
+        ArgumentNullException.ThrowIfNull(inputModel);
+        return new CreateUserCommand(Email: inputModel.Email, Name: inputModel.Name);
+    }
+    
+    public static UpdateUserCommand ToUpdateCommand(this UserInputModel inputModel, Guid id)
+    {
+        ArgumentNullException.ThrowIfNull(inputModel);
+        return new UpdateUserCommand(id, inputModel.Email, inputModel.Name);
     }
 }
