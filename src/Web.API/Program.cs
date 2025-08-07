@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment())
         options.DefaultModelsExpandDepth(0); // Oculta a seção de modelos por padrão
     });
 
-    // app.ApplyMigrations();
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
