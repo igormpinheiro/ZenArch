@@ -21,7 +21,7 @@ services:
         max-file: "3"
 
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/azure-sql-edge:latest
     container_name: sqlserver
     environment:
       SA_PASSWORD: "Strong.ZenPass@987"
