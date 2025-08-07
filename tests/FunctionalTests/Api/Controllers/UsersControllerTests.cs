@@ -1,29 +1,30 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Application.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
-using Web.API.Models;
 
 namespace FunctionalTests.Api.Controllers;
 
 public class UsersControllerTests
 {
-    private readonly WebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
-    // private readonly string _connectionString = "Server=localhost,1433;Database=ZenArchDB;User Id=sa;Password=Strong.ZenPass@987;TrustServerCertificate=True;";
-
     public UsersControllerTests()
     {
-        _factory = new WebApplicationFactory<Program>();
-        _client = _factory.CreateClient();
+        var factory = new WebApplicationFactory<Program>();
+        _client = factory.CreateClient();
     }
 
     [Fact]
     public async Task CriarUsuario_ComDadosValidos_DeveRetornarCreated()
     {
         // Arrange
-        var request = new UserInputModel("test@test.com", "test");
+        var request = new UserInputModel
+        {
+            Name = "test",
+            Email = "test@test.com"
+        };
 
         // Act
         var response = await _client.PostAsJsonAsync("api/users", request);
@@ -57,8 +58,11 @@ public class UsersControllerTests
     public async Task CriarUsuario_ComDadosInvalidos_DeveRetornarBadRequest()
     {
         // Arrange
-        var request = new UserInputModel("test", "");
-
+        var request = new UserInputModel
+        {
+            Name = "",
+            Email = "test"
+        };
         // Act
         var response = await _client.PostAsJsonAsync("api/users", request);
 
