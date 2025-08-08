@@ -78,6 +78,15 @@ namespace SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User already has this role..
+        /// </summary>
+        public static string DUPLICATE_ROLE {
+            get {
+                return ResourceManager.GetString("DUPLICATE_ROLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email already registered on the platform..
         /// </summary>
         public static string EMAIL_ALREADY_REGISTERED {
@@ -137,6 +146,24 @@ namespace SharedKernel.Resources {
         public static string FIELD_TOO_LONG {
             get {
                 return ResourceManager.GetString("FIELD_TOO_LONG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insufficient permissions to access this resource..
+        /// </summary>
+        public static string INSUFFICIENT_PERMISSIONS {
+            get {
+                return ResourceManager.GetString("INSUFFICIENT_PERMISSIONS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid age. Must be between 18 and 120 years..
+        /// </summary>
+        public static string INVALID_AGE {
+            get {
+                return ResourceManager.GetString("INVALID_AGE", resourceCulture);
             }
         }
         
@@ -204,11 +231,56 @@ namespace SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Role not found..
+        /// </summary>
+        public static string ROLE_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("ROLE_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown error..
         /// </summary>
         public static string UNKNOWN_ERROR {
             get {
                 return ResourceManager.GetString("UNKNOWN_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User already exists in the system..
+        /// </summary>
+        public static string USER_ALREADY_EXISTS {
+            get {
+                return ResourceManager.GetString("USER_ALREADY_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user is blocked in the system..
+        /// </summary>
+        public static string USER_BLOCKED {
+            get {
+                return ResourceManager.GetString("USER_BLOCKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user is inactive and cannot perform this operation..
+        /// </summary>
+        public static string USER_INACTIVE {
+            get {
+                return ResourceManager.GetString("USER_INACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User not found..
+        /// </summary>
+        public static string USER_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("USER_NOT_FOUND", resourceCulture);
             }
         }
         

@@ -117,4 +117,28 @@
     <data name="USER_WITHOUT_PERMISSION_ACCESS_RESOURCE" xml:space="preserve">
     <value>You can't access this resource.</value>
   </data>
+    <data name="USER_NOT_FOUND" xml:space="preserve">
+    <value>User not found.</value>
+  </data>
+    <data name="USER_INACTIVE" xml:space="preserve">
+    <value>The user is inactive and cannot perform this operation.</value>
+  </data>
+    <data name="USER_BLOCKED" xml:space="preserve">
+    <value>The user is blocked in the system.</value>
+  </data>
+    <data name="USER_ALREADY_EXISTS" xml:space="preserve">
+    <value>User already exists in the system.</value>
+  </data>
+    <data name="INSUFFICIENT_PERMISSIONS" xml:space="preserve">
+    <value>Insufficient permissions to access this resource.</value>
+  </data>
+    <data name="INVALID_AGE" xml:space="preserve">
+    <value>Invalid age. Must be between 18 and 120 years.</value>
+  </data>
+    <data name="DUPLICATE_ROLE" xml:space="preserve">
+    <value>User already has this role.</value>
+  </data>
+    <data name="ROLE_NOT_FOUND" xml:space="preserve">
+    <value>Role not found.</value>
+  </data>
 </root>

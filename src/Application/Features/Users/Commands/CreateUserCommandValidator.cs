@@ -1,6 +1,6 @@
 using FluentValidation;
 using SharedKernel.Extensions;
-using SharedKernel.Resources;
+using Domain.Errors;
 
 namespace Application.Features.Users.Commands;
 
@@ -9,10 +9,14 @@ internal sealed class CreateUserCommandValidator : AbstractValidator<CreateUserC
     public CreateUserCommandValidator()
     {
         RuleFor(user => user.Name)
-            .NotEmpty().WithMessage(ResourceMessages.NAME_EMPTY)
-            .MaximumLength(100).WithMessage(ResourceMessages.FIELD_TOO_LONG);
-        RuleFor(user => user.Email).NotEmpty().WithMessage(ResourceMessages.EMAIL_EMPTY);
+            .NotEmpty().WithMessage(UserErrors.NameEmpty.Description)
+            .MaximumLength(100).WithMessage(UserErrors.NameTooLong.Description);
+        
+        RuleFor(user => user.Email)
+            .NotEmpty().WithMessage(UserErrors.EmailEmpty.Description);
+        
         When(user => user.Email.NotEmpty(),
-            () => RuleFor(user => user.Email).EmailAddress().WithMessage(ResourceMessages.EMAIL_INVALID));
+            () => RuleFor(user => user.Email)
+                .EmailAddress().WithMessage(UserErrors.EmailInvalid.Description));
     }
 }
