@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Messaging;
+using Domain.Errors;
 using Domain.Interfaces.Repositories;
 using ErrorOr;
 using SharedKernel.Abstractions;
@@ -13,15 +14,12 @@ internal sealed class DeleteUserCommandHandler(IUserRepository repository, IUnit
     public async Task<ErrorOr<Success>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         var user = await repository.GetByIdAsync(request.Id, cancellationToken);
-
         if (user is null)
         {
-            return Error.Conflict("User.NotFound", "User not found");
+            return UserErrors.NotFound;
         }
-
         await repository.DeleteAsync(user, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-
         return Result.Success;
     }
 }
