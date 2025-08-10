@@ -1,6 +1,7 @@
 using Application.Abstractions.Messaging;
 using Application.Mappings;
 using Application.Models;
+using Domain.Errors;
 using Domain.Interfaces.Repositories;
 using ErrorOr;
 using SharedKernel.Abstractions;
@@ -18,14 +19,14 @@ internal sealed class UpdateUserCommandHandler(IUserRepository repository, IUnit
 
         if (user is null)
         {
-            return Error.Conflict("User.NotFound", "User not found");
+            return UserErrors.NotFound;
         }
 
         var emailAlreadyExists = await repository.ExistsAsync(p => p.Email == request.Email, cancellationToken);
 
         if (user.Email != request.Email && emailAlreadyExists)
         {
-            return Error.Conflict("User.EmailAlreadyExists", "Email already exists");
+            return UserErrors.EmailAlreadyExists;
         }
 
         user.UpdateName(request.Name);
