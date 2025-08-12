@@ -6,8 +6,6 @@ using SharedKernel.Abstractions;
 
 namespace Application.Features.Users.Commands;
 
-public sealed record DeleteUserCommand(Guid Id) : ICommand;
-
 internal sealed class DeleteUserCommandHandler(IUserRepository repository, IUnitOfWork unitOfWork)
     : ICommandHandler<DeleteUserCommand>
 {
