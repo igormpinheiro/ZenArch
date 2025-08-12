@@ -8,8 +8,6 @@ using SharedKernel.Abstractions;
 
 namespace Application.Features.Users.Commands;
 
-public sealed record UpdateUserCommand(Guid Id, string Email, string Name) : ICommand<UserViewModel>;
-
 internal sealed class UpdateUserCommandHandler(IUserRepository repository, IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateUserCommand, UserViewModel>
 {
