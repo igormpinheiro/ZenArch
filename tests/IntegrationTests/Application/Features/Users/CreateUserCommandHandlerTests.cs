@@ -22,7 +22,7 @@ public class CreateUserCommandHandlerTests(IntegrationTestAppFactory factory) : 
     }
 
     [Fact]
-    public async Task Handle_DuplicateEmail_ShouldReturnValidationError()
+    public async Task Handle_DuplicateEmail_ShouldReturnConflictError()
     {
         // Arrange
         var command = new CreateUserCommandBuilder().Build();
@@ -37,7 +37,7 @@ public class CreateUserCommandHandlerTests(IntegrationTestAppFactory factory) : 
 
         // Assert
         result.IsError.ShouldBeTrue();
-        result.Errors.Count.ShouldBe(1);
-        result.Errors.ShouldContain(e => e.Description == UserErrors.EmailAlreadyExists.Description);
+        result.FirstError.Type.ShouldBe(ErrorOr.ErrorType.Conflict);
+        result.FirstError.Description.ShouldBe(UserErrors.EmailAlreadyExists.Description);
     }
 }
