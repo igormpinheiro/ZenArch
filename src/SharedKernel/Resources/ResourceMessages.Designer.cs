@@ -150,6 +150,15 @@ namespace SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The ID cannot be empty..
+        /// </summary>
+        public static string ID_EMPTY {
+            get {
+                return ResourceManager.GetString("ID_EMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Insufficient permissions to access this resource..
         /// </summary>
         public static string INSUFFICIENT_PERMISSIONS {

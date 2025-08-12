@@ -6,6 +6,10 @@ namespace Domain.Errors;
 public static class UserErrors
 {
     // Erros de validação
+    public static Error IdEmpty => Error.Validation(
+        code: "User.IdEmpty",
+        description: ResourceMessages.ID_EMPTY);
+
     public static Error NameEmpty => Error.Validation(
         code: "User.NameEmpty",
         description: ResourceMessages.NAME_EMPTY);
