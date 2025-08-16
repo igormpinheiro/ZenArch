@@ -27,7 +27,7 @@ public sealed class UsersController(ISender mediator, ILogger<UsersController> l
         CancellationToken cancellationToken = default)
     {
         // Converter para o modelo do SharedKernel
-        var sharedKernelPagination = SharedKernel.Common.Pagination.PaginationRequest.Create(
+        var sharedKernelPagination = PaginationRequest.Create(
             pagination.Page,
             pagination.PageSize,
             pagination.SortBy,

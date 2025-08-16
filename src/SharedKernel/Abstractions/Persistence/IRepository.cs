@@ -35,10 +35,18 @@ public interface IRepository<TEntity> where TEntity : class, IEntity
     Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 
     // Métodos avançados de consulta
-    Task<IReadOnlyList<TEntity>> GetPagedResponseAsync(int pageNumber, int pageSize,
-        CancellationToken cancellationToken = default);
-
-    Task<IReadOnlyList<TEntity>> GetPagedResponseAsync(int pageNumber, int pageSize,
+    Task<IReadOnlyList<TEntity>> GetPaginatedAsync(
+        int pageNumber, 
+        int pageSize,
         Expression<Func<TEntity, bool>> predicate,
+        string sortBy = "Id", 
+        bool sortDescending = false,
+        CancellationToken cancellationToken = default);
+    
+    Task<IEnumerable<TEntity>> GetPaginatedAsync(
+        int pageNumber, 
+        int pageSize, 
+        string sortBy = "Id", 
+        bool sortDescending = false,
         CancellationToken cancellationToken = default);
 }

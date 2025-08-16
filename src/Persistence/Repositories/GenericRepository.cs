@@ -99,22 +99,38 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : c
         return Task.CompletedTask;
     }
 
-    public virtual async Task<IReadOnlyList<TEntity>> GetPagedResponseAsync(int pageNumber, int pageSize,
+    public virtual async Task<IReadOnlyList<TEntity>> GetPaginatedAsync(
+        int pageNumber, 
+        int pageSize,
+        Expression<Func<TEntity, bool>> predicate,
+        string sortBy = "Id", 
+        bool sortDescending = false,
         CancellationToken cancellationToken = default)
     {
-        return await _dbSet
-            .Skip((pageNumber - 1) * pageSize)
+        var query = _dbSet.AsQueryable();
+        query = sortDescending 
+            ? query.OrderByDescending(e => EF.Property<object>(e, sortBy)) 
+            : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        query = query.Where(predicate);
+        return await query
+            .Skip(pageNumber)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
-
-    public virtual async Task<IReadOnlyList<TEntity>> GetPagedResponseAsync(int pageNumber, int pageSize,
-        Expression<Func<TEntity, bool>> predicate,
+    
+    public virtual async Task<IEnumerable<TEntity>> GetPaginatedAsync(
+        int pageNumber, 
+        int pageSize, 
+        string sortBy = "Id", 
+        bool sortDescending = false,
         CancellationToken cancellationToken = default)
     {
-        return await _dbSet
-            .Where(predicate)
-            .Skip((pageNumber - 1) * pageSize)
+        var query = _dbSet.AsQueryable();
+        query = sortDescending 
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortBy)) 
+                : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        return await query
+            .Skip(pageNumber)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
     }

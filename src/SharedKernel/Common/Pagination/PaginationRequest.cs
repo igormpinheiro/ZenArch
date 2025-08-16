@@ -2,12 +2,12 @@
 
 public sealed record PaginationRequest : IPaginationRequest
 {
-    private const int MaxPageSize = 100;
-    private const int DefaultPageSize = 10;
-    private const int MinPageSize = 1;
+    private const int _maxPageSize = 100;
+    private const int _defaultPageSize = 10;
+    private const int _minPageSize = 1;
 
     private int _page = 1;
-    private int _pageSize = DefaultPageSize;
+    private int _pageSize = _defaultPageSize;
 
     public int Page
     {
@@ -18,13 +18,13 @@ public sealed record PaginationRequest : IPaginationRequest
     public int PageSize
     {
         get => _pageSize;
-        init => _pageSize = Math.Clamp(value, MinPageSize, MaxPageSize);
+        init => _pageSize = Math.Clamp(value, _minPageSize, _maxPageSize);
     }
 
     public string SortBy { get; init; } = "Id";
     public bool SortDescending { get; init; }
 
-    public static PaginationRequest Create(int page = 1, int pageSize = DefaultPageSize, 
+    public static PaginationRequest Create(int page = 1, int pageSize = _defaultPageSize, 
         string sortBy = "Id", bool sortDescending = false)
     {
         return new PaginationRequest

@@ -15,23 +15,23 @@ public class UserRepository(ApplicationDbContext dbContext) : GenericRepository<
         return await _dbSet.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 
-    public async Task<IEnumerable<User>> GetPaginatedAsync(
-        int skip, 
-        int take, 
+    public override async Task<IEnumerable<User>> GetPaginatedAsync(
+        int pageNumber, 
+        int pageSize, 
         string sortBy = "Id", 
         bool sortDescending = false,
         CancellationToken cancellationToken = default)
     {
         var query = _dbSet.AsQueryable();
-        query = sortBy.ToLowerInvariant() switch
+        query = sortBy.ToUpperInvariant() switch
         {
-            "name" => sortDescending 
+            "NAME" => sortDescending 
                 ? query.OrderByDescending(u => u.Name) 
                 : query.OrderBy(u => u.Name),
-            "email" => sortDescending 
+            "EMAIL" => sortDescending 
                 ? query.OrderByDescending(u => u.Email) 
                 : query.OrderBy(u => u.Email),
-            "createdat" => sortDescending 
+            "CREATEDAT" => sortDescending 
                 ? query.OrderByDescending(u => u.CreatedAt) 
                 : query.OrderBy(u => u.CreatedAt),
             _ => sortDescending 
@@ -39,8 +39,8 @@ public class UserRepository(ApplicationDbContext dbContext) : GenericRepository<
                 : query.OrderBy(u => u.Id)
         };
         return await query
-            .Skip(skip)
-            .Take(take)
+            .Skip(pageNumber)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 }
