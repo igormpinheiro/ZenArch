@@ -1,4 +1,4 @@
-namespace SharedKernel.Abstractions;
+namespace SharedKernel.Abstractions.Services;
 
 public interface IDateTimeProvider
 {

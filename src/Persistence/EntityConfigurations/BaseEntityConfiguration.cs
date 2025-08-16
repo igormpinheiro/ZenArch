@@ -1,6 +1,6 @@
+using Domain.Entities.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SharedKernel.Abstractions;
 
 namespace Persistence.EntityConfigurations;
 

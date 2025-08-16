@@ -1,7 +1,5 @@
 using Domain.Entities;
-using Domain.Interfaces.Services;
 using Microsoft.EntityFrameworkCore;
-using SharedKernel.Abstractions;
 
 namespace Persistence.Context;
 

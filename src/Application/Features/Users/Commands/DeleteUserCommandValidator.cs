@@ -1,5 +1,5 @@
-﻿using FluentValidation;
-using Domain.Errors;
+﻿using Domain.Errors;
+using FluentValidation;
 
 namespace Application.Features.Users.Commands;
 

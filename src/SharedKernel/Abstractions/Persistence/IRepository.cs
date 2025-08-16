@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
+using SharedKernel.Abstractions.Domain;
 
-namespace SharedKernel.Abstractions;
+namespace SharedKernel.Abstractions.Persistence;
 
 // <summary>
 /// Interface genérica para operações de repositório

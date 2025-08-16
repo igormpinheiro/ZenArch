@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Abstractions\Messaging\" />
+    <Folder Include="Common\Specifications\" />
+    <Folder Include="Common\ValueObjects\" />
     <Folder Include="Constants\" />
+    <Folder Include="Events\" />
+    <Folder Include="Exceptions\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
 

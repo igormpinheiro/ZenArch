@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Domain;
 
 namespace Persistence.Interceptors;
 

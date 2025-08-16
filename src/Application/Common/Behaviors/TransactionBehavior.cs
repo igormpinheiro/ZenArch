@@ -1,7 +1,7 @@
 using Application.Abstractions.Messaging;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Persistence;
 
 namespace Application.Common.Behaviors;
 

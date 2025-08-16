@@ -1,8 +1,8 @@
 using Application;
 using HealthChecks.UI.Client;
-using Persistence;
 using Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Persistence;
 using Serilog;
 using Web.API.Extensions;
 

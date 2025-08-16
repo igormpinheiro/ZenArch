@@ -1,5 +1,5 @@
+using Domain.Entities.Base;
 using Domain.Events;
-using SharedKernel.Abstractions;
 
 namespace Domain.Entities;
 

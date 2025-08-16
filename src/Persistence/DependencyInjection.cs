@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Persistence.Context;
 using Persistence.Interceptors;
 using Persistence.Repositories;
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Persistence;
 
 namespace Persistence;
 

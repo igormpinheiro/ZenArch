@@ -1,4 +1,6 @@
-namespace SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Domain;
+
+namespace SharedKernel.Abstractions.Persistence;
 
 //// <summary>
 /// Interface para o Unit of Work

@@ -1,19 +1,6 @@
-using MediatR;
+using SharedKernel.Abstractions.Domain;
 
-namespace SharedKernel.Abstractions;
-
-public interface IEntity
-{
-    //Guid Id { get; init; }
-    string CreatedBy { get; set; }
-    DateTime CreatedAt { get; set; }
-    string? UpdatedBy { get; set; }
-    DateTime? UpdatedAt { get; set; }
-    List<IDomainEvent> DomainEvents { get; }
-    void ClearDomainEvents();
-
-    //object GetId();
-}
+namespace Domain.Entities.Base;
 
 /// <summary>
 /// Classe base abstrata para entidades com ID genérico
@@ -97,8 +84,4 @@ public abstract class BaseEntity<TId> : IEntity where TId : IEquatable<TId>
     }
 
     public static bool operator !=(BaseEntity<TId>? a, BaseEntity<TId>? b) => !(a == b);
-}
-
-public interface IDomainEvent : INotification
-{
 }

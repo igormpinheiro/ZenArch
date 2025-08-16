@@ -2,7 +2,7 @@
 using Domain.Errors;
 using Domain.Interfaces.Repositories;
 using ErrorOr;
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Persistence;
 
 namespace Application.Features.Users.Commands;
 

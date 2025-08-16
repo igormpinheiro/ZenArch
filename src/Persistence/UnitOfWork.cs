@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Repositories;
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Domain;
+using SharedKernel.Abstractions.Persistence;
 
 namespace Persistence;
 

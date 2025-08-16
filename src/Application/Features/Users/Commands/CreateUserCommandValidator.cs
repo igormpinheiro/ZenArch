@@ -1,6 +1,6 @@
+using Domain.Errors;
 using FluentValidation;
 using SharedKernel.Extensions;
-using Domain.Errors;
 
 namespace Application.Features.Users.Commands;
 

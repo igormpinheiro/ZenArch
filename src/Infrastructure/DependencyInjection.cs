@@ -4,7 +4,7 @@ using Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Context;
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Services;
 
 namespace Infrastructure;
 

@@ -1,7 +1,8 @@
 using Domain.Interfaces.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Domain;
+using SharedKernel.Abstractions.Services;
 
 namespace Persistence.Interceptors;
 
