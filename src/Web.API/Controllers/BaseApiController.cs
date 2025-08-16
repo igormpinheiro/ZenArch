@@ -1,93 +1,150 @@
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Web.API.Models.Responses;
+using SharedKernel.Common.Pagination;
+using Web.API.Contracts.Responses;
 
 namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public abstract class BaseApiController(ISender mediator) : ControllerBase
+[Produces("application/json")]
+public abstract class BaseApiController(ISender mediator, ILogger<BaseApiController> logger) : ControllerBase
 {
-    private async Task<IActionResult> HandleRequest<TResponse>(IRequest<ErrorOr<TResponse>> request,
+    private readonly ISender _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+    private readonly ILogger<BaseApiController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+    private async Task<IActionResult> HandleRequest<TResponse>(
+        IRequest<ErrorOr<TResponse>> request,
         CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(request, cancellationToken);
+        using var scope = _logger.BeginScope("Processing request {RequestType}", typeof(TResponse).Name);
 
-        return result.Match(value => Ok(ApiResponse<TResponse>.Success(value)), ProcessErrors);
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.Match(
+            value =>
+            {
+                _logger.LogDebug("Request processed successfully");
+                return Ok(CreateSuccessResponse(value));
+            },
+            errors =>
+            {
+                _logger.LogWarning("Request failed with errors: {@Errors}", errors);
+                return ProcessErrors(errors);
+            }
+        );
+    }
+
+    private async Task<IActionResult> HandleVoidRequest(
+        IRequest<ErrorOr<Success>> request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.Match(
+            _ =>
+            {
+                _logger.LogDebug("Void request processed successfully");
+                return NoContent();
+            },
+            errors =>
+            {
+                _logger.LogWarning("Void request failed with errors: {@Errors}", errors);
+                return ProcessErrors(errors);
+            }
+        );
+    }
+
+    private async Task<IActionResult> HandleCreateRequest<TResponse>(
+        IRequest<ErrorOr<TResponse>> request,
+        string routeName,
+        Func<TResponse, object> getRouteValues,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.Match(
+            value =>
+            {
+                var routeValues = getRouteValues(value);
+                var resourceUri = Url.Link(routeName, routeValues);
+
+                _logger.LogDebug("Resource created successfully at {ResourceUri}", resourceUri);
+
+                return Created(resourceUri, CreateSuccessResponse(value));
+            },
+            errors =>
+            {
+                _logger.LogWarning("Create request failed with errors: {@Errors}", errors);
+                return ProcessErrors(errors);
+            }
+        );
+    }
+
+    // ===== MÉTODO CORRIGIDO PARA PAGINATEDRESULT =====
+    private async Task<IActionResult> HandlePaginatedRequest<TResponse>(
+        IRequest<ErrorOr<PaginatedResult<TResponse>>> request,
+        CancellationToken cancellationToken)
+    {
+        using var scope = _logger.BeginScope("Processing paginated request {RequestType}", typeof(TResponse).Name);
+
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.Match(
+            paginatedResult =>
+            {
+                _logger.LogDebug(
+                    "Paginated request processed successfully. Items: {ItemCount}, Total: {TotalCount}",
+                    paginatedResult.Metadata.CurrentPageCount,
+                    paginatedResult.Metadata.TotalCount);
+
+                return Ok(CreateSuccessResponse(paginatedResult));
+            },
+            errors =>
+            {
+                _logger.LogWarning("Paginated request failed with errors: {@Errors}", errors);
+                return ProcessErrors(errors);
+            }
+        );
     }
 
     private IActionResult ProcessErrors(List<Error> errors)
     {
         var errorDetails = ErrorDetails.FromErrorOr(errors);
-
-        return StatusCode(
-            errorDetails.StatusCode,
-            ApiResponse<object>.Failure(errorDetails));
+        return StatusCode(errorDetails.StatusCode, ApiResponse<object>.Failure(errorDetails));
     }
 
-    protected async Task<IActionResult> SendCommand<TResponse>(IRequest<ErrorOr<TResponse>> request,
-        CancellationToken cancellationToken)
+    private static ApiResponse<T> CreateSuccessResponse<T>(T data)
     {
-        return await HandleRequest(request, cancellationToken);
+        return ApiResponse<T>.Success(data);
     }
 
-    protected async Task<IActionResult> SendCommand(IRequest<ErrorOr<Success>> request,
-        CancellationToken cancellationToken)
-    {
-        var result = await mediator.Send(request, cancellationToken);
+    // Métodos convenientes para backward compatibility e clareza
+    protected Task<IActionResult> SendCommand<TResponse>(
+        IRequest<ErrorOr<TResponse>> request,
+        CancellationToken cancellationToken) =>
+        HandleRequest(request, cancellationToken);
 
-        return result.Match(_ => NoContent(), ProcessErrors);
-    }
-    
-    protected async Task<IActionResult> SendCreateCommand<TResponse>(
-        IRequest<ErrorOr<TResponse>> request, 
+    protected Task<IActionResult> SendCommand(
+        IRequest<ErrorOr<Success>> request,
+        CancellationToken cancellationToken) =>
+        HandleVoidRequest(request, cancellationToken);
+
+    protected Task<IActionResult> SendQuery<TResponse>(
+        IRequest<ErrorOr<TResponse>> request,
+        CancellationToken cancellationToken) =>
+        HandleRequest(request, cancellationToken);
+
+    protected Task<IActionResult> SendCreateCommand<TResponse>(
+        IRequest<ErrorOr<TResponse>> request,
         string routeName,
-        Func<TResponse, object> getRouteValuesFunc, CancellationToken cancellationToken)
-    {
-        var result = await mediator.Send(request, cancellationToken);
-    
-        return result.Match(
-            value => 
-            {
-                // Obter valores de rota a partir do resultado
-                var routeValues = getRouteValuesFunc(value);
-            
-                // Gerar URI do recurso
-                var resourceUri = Url.Link(routeName, routeValues);
-            
-                // Retornar 201 Created
-                return Created(
-                    resourceUri, 
-                    ApiResponse<TResponse>.Success(value));
-            },
-            ProcessErrors
-        );
-    }
+        Func<TResponse, object> getRouteValues,
+        CancellationToken cancellationToken) =>
+        HandleCreateRequest(request, routeName, getRouteValues, cancellationToken);
 
-    protected async Task<IActionResult> SendQuery<TResponse>(IRequest<ErrorOr<TResponse>> request,
-        CancellationToken cancellationToken)
-    {
-        return await HandleRequest(request, cancellationToken);
-    }
-
-    protected async Task<IActionResult> SendPaginatedQuery<TResponse>(
-        IRequest<ErrorOr<(List<TResponse> items, int totalCount)>> request,
-        PaginationRequest paginationRequest, CancellationToken cancellationToken)
-    {
-        var result = await mediator.Send(request, cancellationToken);
-
-        return result.Match(
-            value =>
-            {
-                var paginatedResponse = PaginatedResponse<TResponse>.Create(
-                    value.items,
-                    paginationRequest,
-                    value.totalCount);
-
-                return Ok(ApiResponse<PaginatedResponse<TResponse>>.Success(paginatedResponse));
-            },
-            ProcessErrors
-        );
-    }
+    protected Task<IActionResult> SendPaginatedQuery<TResponse>(
+        IRequest<ErrorOr<PaginatedResult<TResponse>>> request,
+        CancellationToken cancellationToken) =>
+        HandlePaginatedRequest(request, cancellationToken);
 }
