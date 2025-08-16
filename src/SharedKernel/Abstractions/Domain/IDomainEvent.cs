@@ -4,6 +4,6 @@ namespace SharedKernel.Abstractions.Domain;
 
 public interface IDomainEvent : INotification
 {
-    Guid Id { get; }
-    DateTime OccurredOn { get; }
+    Guid EventId { get; }
+    DateTimeOffset OccurredOn { get; }
 }

@@ -1,4 +1,4 @@
-using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Domain;
 
 namespace Domain.Events;
 
@@ -13,7 +13,12 @@ public sealed record UserCreatedEvent : IDomainEvent
         UserId = userId;
         Email = email;
         Name = name;
+        EventId = Guid.NewGuid();
+        OccurredOn = DateTimeOffset.UtcNow;      
     }
+
+    public Guid EventId { get; }
+    public DateTimeOffset OccurredOn { get; }
 }
 
 public sealed record AdminUserCreatedEvent : IDomainEvent
@@ -23,5 +28,10 @@ public sealed record AdminUserCreatedEvent : IDomainEvent
     public AdminUserCreatedEvent(Guid userId)
     {
         UserId = userId;
+        EventId = Guid.NewGuid();
+        OccurredOn = DateTimeOffset.UtcNow;      
     }
+
+    public Guid EventId { get; }
+    public DateTimeOffset OccurredOn { get; }
 }
