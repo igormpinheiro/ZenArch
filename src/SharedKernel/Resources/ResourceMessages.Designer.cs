@@ -60,6 +60,33 @@ namespace SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unauthorized access..
+        /// </summary>
+        public static string ACCESS_UNAUTHORIZED {
+            get {
+                return ResourceManager.GetString("ACCESS_UNAUTHORIZED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid parameter provided..
+        /// </summary>
+        public static string ARGUMENT_INVALID {
+            get {
+                return ResourceManager.GetString("ARGUMENT_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required parameter not provided..
+        /// </summary>
+        public static string ARGUMENT_NULL {
+            get {
+                return ResourceManager.GetString("ARGUMENT_NULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid code..
         /// </summary>
         public static string CODE_INVALID {
@@ -141,6 +168,15 @@ namespace SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feature not implemented..
+        /// </summary>
+        public static string FEATURE_NOT_IMPLEMENTED {
+            get {
+                return ResourceManager.GetString("FEATURE_NOT_IMPLEMENTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field is too long..
         /// </summary>
         public static string FIELD_TOO_LONG {
@@ -164,6 +200,15 @@ namespace SharedKernel.Resources {
         public static string INSUFFICIENT_PERMISSIONS {
             get {
                 return ResourceManager.GetString("INSUFFICIENT_PERMISSIONS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal server error..
+        /// </summary>
+        public static string INTERNAL_SERVER_ERROR {
+            get {
+                return ResourceManager.GetString("INTERNAL_SERVER_ERROR", resourceCulture);
             }
         }
         
@@ -222,6 +267,15 @@ namespace SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid operation in the current state..
+        /// </summary>
+        public static string OPERATION_INVALID {
+            get {
+                return ResourceManager.GetString("OPERATION_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The password entered is different from the current password..
         /// </summary>
         public static string PASSWORD_DIFFERENT_CURRENT_PASSWORD {
@@ -236,6 +290,15 @@ namespace SharedKernel.Resources {
         public static string PASSWORD_EMPTY {
             get {
                 return ResourceManager.GetString("PASSWORD_EMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation timed out..
+        /// </summary>
+        public static string REQUEST_TIMEOUT {
+            get {
+                return ResourceManager.GetString("REQUEST_TIMEOUT", resourceCulture);
             }
         }
         

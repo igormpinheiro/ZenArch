@@ -63,6 +63,27 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </resheader>
+    <data name="ARGUMENT_NULL" xml:space="preserve">
+    <value>Required parameter not provided.</value>
+  </data>
+    <data name="ARGUMENT_INVALID" xml:space="preserve">
+    <value>Invalid parameter provided.</value>
+  </data>
+    <data name="ACCESS_UNAUTHORIZED" xml:space="preserve">
+    <value>Unauthorized access.</value>
+  </data>
+    <data name="FEATURE_NOT_IMPLEMENTED" xml:space="preserve">
+    <value>Feature not implemented.</value>
+  </data>
+    <data name="REQUEST_TIMEOUT" xml:space="preserve">
+    <value>The operation timed out.</value>
+  </data>
+    <data name="OPERATION_INVALID" xml:space="preserve">
+    <value>Invalid operation in the current state.</value>
+  </data>
+    <data name="INTERNAL_SERVER_ERROR" xml:space="preserve">
+    <value>Internal server error.</value>
+  </data>
     <data name="CODE_INVALID" xml:space="preserve">
     <value>Invalid code.</value>
   </data>
@@ -141,7 +162,7 @@
     <data name="ROLE_NOT_FOUND" xml:space="preserve">
     <value>Role not found.</value>
   </data>
-  <data name="ID_EMPTY" xml:space="preserve">
+    <data name="ID_EMPTY" xml:space="preserve">
     <value>The ID cannot be empty.</value>
 </data>
 </root>
