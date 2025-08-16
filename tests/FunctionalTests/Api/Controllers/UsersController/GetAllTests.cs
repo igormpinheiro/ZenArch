@@ -28,19 +28,19 @@ public class GetAllTests(TestContainerFixture testContainerFixture) : ApiTestBas
         await DoPostAsync(_usersEndpoint, user2Request);
 
         // Act
-        var response = await DoGetAsync(_usersEndpoint);
+        var response = await DoGetAsync($"{_usersEndpoint}?page=1&pageSize=10");
 
         // Assert
         var usersArray = await AssertSuccessResponseAndGetDataAsync(response, HttpStatusCode.OK);
 
-        usersArray?.GetArrayLength().ShouldBeGreaterThanOrEqualTo(2);
+        usersArray?.GetProperty("items").GetArrayLength().ShouldBe(2);
     }
 
     // [Fact]
     // public async Task Failure()
     // {
-    //     // Act - Get users with invalid query parameters
-    //     var response = await DoGetAsync($"{_usersEndpoint}?invalidParam=invalidValue&limit=-1");
+    //     // Act - Get users with invalid pagination parameters
+    //     var response = await DoGetAsync($"{_usersEndpoint}?page=0&pageSize=101");
     //
     //     // Assert
     //     await AssertErrorResponseAndGetDataAsync(response, HttpStatusCode.BadRequest);

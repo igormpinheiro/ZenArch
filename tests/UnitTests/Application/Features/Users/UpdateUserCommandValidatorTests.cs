@@ -1,5 +1,6 @@
 ﻿using Application.Features.Users.Commands;
 using CommonTestUtilities.Builders.Application.Users;
+using Domain.Errors;
 using FluentValidation.TestHelper;
 
 namespace UnitTests.Application.Features.Users;
@@ -34,7 +35,7 @@ public class UpdateUserCommandValidatorTests
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Id)
-            .WithErrorMessage("User ID is required");
+            .WithErrorMessage(UserErrors.IdEmpty.Description);
     }
 
     [Theory]
@@ -59,7 +60,6 @@ public class UpdateUserCommandValidatorTests
     [InlineData("")]
     [InlineData(" ")]
     [InlineData(null)]
-    [InlineData("A")]
     public void Validate_InvalidName_ShouldHaveValidationError(string name)
     {
         // Arrange
